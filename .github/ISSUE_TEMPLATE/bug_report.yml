@@ -1,0 +1,50 @@
+name: Bug Report
+description: File a bug report to help us improve Polly
+title: "[Bug]: "
+labels: ["bug"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible to help us reproduce and fix the issue.
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Please provide details about your environment
+      placeholder: "e.g., OS: Ubuntu 22.04, Python version: 3.9.2, Polly version: 1.0.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is
+      placeholder: Tell us what happened!
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs-screenshots
+    attributes:
+      label: Relevant logs or screenshots
+      description: If applicable, add logs or screenshots to help explain your problem
+      placeholder: Paste logs or drag and drop screenshots here
+    validations:
+      required: false

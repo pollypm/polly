@@ -1,0 +1,40 @@
+name: Feature Request
+description: Suggest an idea for Polly
+title: "[Feature]: "
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible to help us understand your request.
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Describe the feature
+      description: A clear and concise description of what you want to happen
+      placeholder: Tell us about the feature you'd like to see!
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Is your feature request related to a problem? Please describe the motivation behind this request
+      placeholder: |
+        I'm always frustrated when [...]
+        This would help because [...]
+        The use case for this feature is [...]
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe any alternative solutions or features you've considered
+      placeholder: I've considered alternatives like [...]
+    validations:
+      required: false

@@ -1,0 +1,21 @@
+name: Question
+description: Ask a question about Polly
+title: "[Question]: "
+labels: ["question"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your question! We're here to help. Please be as specific as possible so we can provide the best assistance.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: Please describe your question in detail
+      placeholder: |
+        What would you like to know about Polly?
+        Please include any relevant context or background information.
+    validations:
+      required: true
