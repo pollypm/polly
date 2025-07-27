@@ -71,7 +71,11 @@ For detailed documentation and advanced usage, see our [Wiki](https://github.com
 
 ## Contributing
 
-We welcome contributions! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines and best practices.
+We welcome contributions! Please see the [Contributing](CONTRIBUTING.md) file for guidelines and best practices.
+
+## Code of Conduct
+
+Please read the [Code of Condict](CODE_OF_CONDUCT.md) to know what rules our community follows.
 
 ## License
 
