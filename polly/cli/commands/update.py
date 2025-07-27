@@ -6,20 +6,30 @@ init(autoreset=True)
 
 
 def run_command(command, description):
-    print(f"{Fore.CYAN}➤ {description}...", end="", flush=True)
+    print(f"{Fore.CYAN}➤ {description}...", flush=True)
     try:
-        # Run command silently
-        result = subprocess.run(
-            command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        # Run command and show output live
+        process = subprocess.Popen(
+            command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
         )
-        if result.returncode == 0:
-            print(f"\r{Fore.GREEN}✔ {description} completed.")
+        while True:
+            output = process.stdout.readline()
+            if output == "" and process.poll() is not None:
+                break
+            if output:
+                print(output, end="")
+        returncode = process.poll()
+        if returncode == 0:
+            print(f"{Fore.GREEN}✔ {description} completed.")
         else:
-            print(f"\r{Fore.RED}✖ {description} failed.")
-            print(f"{Fore.YELLOW}Error: {result.stderr.decode().strip()}")
+            print(f"{Fore.RED}✖ {description} failed.")
             sys.exit(1)
     except Exception as e:
-        print(f"\r{Fore.RED}✖ {description} failed.")
+        print(f"{Fore.RED}✖ {description} failed.")
         print(f"{Fore.YELLOW}Exception: {e}")
         sys.exit(1)
 
