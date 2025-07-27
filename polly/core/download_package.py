@@ -1,5 +1,7 @@
 import subprocess
 
+from ..utils import run_silent_command
+
 
 def download_package(repo_url, dest_dir=None):
     """
@@ -10,13 +12,13 @@ def download_package(repo_url, dest_dir=None):
     :return: None
     :raises: subprocess.CalledProcessError if git clone fails
     """
-    cmd = ["sudo", "git", "clone", repo_url]
+    command = f"git clone {repo_url}"
     if dest_dir:
-        cmd.append(dest_dir)
-    try:
-        # Run git clone with suppressed output for cleaner install process
-        subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except subprocess.CalledProcessError as e:
+        command += f" {dest_dir}"
+
+    if not run_silent_command(command, "Cloning package"):
         raise subprocess.CalledProcessError(
-            e.returncode, e.cmd, f"Failed to clone {repo_url}"
+            returncode=1, cmd=command, output="Failed to clone package"
         )
+    print("Package cloned successfully.")
+    return

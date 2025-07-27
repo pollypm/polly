@@ -8,7 +8,7 @@ def run_silent_command(command, description, cwd=None):
 
     try:
         result = subprocess.run(
-            command, shell=True, capture_output=True, text=True, cwd=cwd
+            "sudo " + command, shell=True, capture_output=True, text=True, cwd=cwd
         )
 
         if result.returncode == 0:
