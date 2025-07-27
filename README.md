@@ -62,7 +62,7 @@ _Polly_ is designed to help you manage, install, and update software across a va
 To install Polly on UNIX-like systems (Linux, MacOS) run the following command. It will prompt you for sudo access.
 
 ```sh
-curl -sSLO https://raw.githubusercontent.com/pollypm/polly/main/install.sh && sudo bash install.sh
+curl -fsSL https://raw.githubusercontent.com/pollypm/polly/main/install.sh | sudo bash
 ```
 
 ## Documentation
