@@ -1,0 +1,110 @@
+# Auto-label for Polly
+
+# --- By file changes ---
+cli:
+  - 'polly/cli/**'
+  - '**/cli.py'
+  - '**/main.py'
+  - '**/command*'
+  - '**/commands/**'
+
+core:
+  - 'polly/core/**'
+  - '**/core.py'
+  - 'polly/main.py'
+
+api:
+  - 'polly/api/**'
+  - '**/api.py'
+
+config:
+  - '**/config.py'
+  - 'polly/config/**'
+  - '**/settings.py'
+  - '**/.env*'
+
+parser:
+  - '**/parser.py'
+  - '**/parse*.py'
+
+utils:
+  - 'polly/utils/**'
+  - '**/utils.py'
+  - '**/helpers.py'
+
+tests:
+  - 'tests/**'
+  - '**/test_*.py'
+  - '**/tests.py'
+
+metadata:
+  - '**/*.md'
+  - '**/README.*'
+  - '**/readme.*'
+
+dependencies:
+  - 'pyproject.toml'
+  - 'requirements.txt'
+  - 'Pipfile'
+  - 'Pipfile.lock'
+
+ci:
+  - '.github/workflows/**'
+  - '.github/actions/**'
+
+scripts:
+  - 'build.sh'
+  - 'install.sh'
+
+# --- By titles and bodies (issues & PRs) ---
+bug:
+  - title: ['bug', 'error', 'traceback', 'exception', 'crash', 'fail', 'broken']
+  - body: ['bug', 'error', 'traceback', 'exception', 'crash', 'fail', 'broken']
+
+feature:
+  - title: ['feature', 'enhancement', 'improve', 'add', 'implement', 'support', 'extend']
+  - body: ['feature', 'enhancement', 'improve', 'add', 'implement', 'support', 'extend']
+
+docs:
+  - title: ['docs', 'documentation', 'readme', 'wiki', 'guide']
+  - body: ['docs', 'documentation', 'readme', 'wiki', 'guide']
+
+tests:
+  - title: ['test', 'tests', 'testing', 'unit test', 'coverage']
+  - body: ['test', 'tests', 'testing', 'unit test', 'coverage']
+
+cli:
+  - title: ['cli', 'command line', 'terminal', 'shell']
+  - body: ['cli', 'command line', 'terminal', 'shell']
+
+config:
+  - title: ['config', 'configuration', 'settings', '.env']
+  - body: ['config', 'configuration', 'settings', '.env']
+
+dependencies:
+  - title: ['dependency', 'dependencies', 'bump', 'upgrade', 'update']
+  - body: ['dependency', 'dependencies', 'bump', 'upgrade', 'update']
+
+ci:
+  - title: ['ci', 'workflow', 'github actions', 'pipeline', 'automation']
+  - body: ['ci', 'workflow', 'github actions', 'pipeline', 'automation']
+
+parser:
+  - title: ['parse', 'parser', 'parsing']
+  - body: ['parse', 'parser', 'parsing']
+
+api:
+  - title: ['api', 'rest', 'endpoint']
+  - body: ['api', 'rest', 'endpoint']
+
+utils:
+  - title: ['util', 'utility', 'helper']
+  - body: ['util', 'utility', 'helper']
+
+core:
+  - title: ['core', 'main logic', 'engine']
+  - body: ['core', 'main logic', 'engine']
+
+scripts:
+  - title: ['script', 'build', 'install']
+  - body: ['script', 'build', 'install']
