@@ -64,6 +64,10 @@ def install_package_from_git(repo_url):
         # Download the package
         try:
             download_package(repo_url, package_dest)
+            run_silent_command(
+                f"git config --global --add safe.directory {package_dest}",
+                f"Marking {package_dest} as safe for git operations",
+            )
         except Exception as e:
             return False, f"Failed to download package: {e}", None
 
