@@ -1,6 +1,5 @@
 import subprocess
 import sys
-import threading
 from colorama import init, Fore, Style
 
 init(autoreset=True)
@@ -42,10 +41,7 @@ def update_main():
             f"\n{Fore.GREEN}{Style.BRIGHT}✔ Update complete! Polly is now up to date."
         )
 
-    # Run in background thread
-    t = threading.Thread(target=do_update, daemon=True)
-    t.start()
-    t.join()
+    do_update()
 
 
 if __name__ == "__main__":
