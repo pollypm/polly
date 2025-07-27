@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polly</title>
+    <meta name="description"
+      content="A versatile software manager for all desktop systems. Cross-platform compatibility, easy software management, and extensible plugin system.">
+    <meta name="keywords" content="software manager, package manager, cross-platform, desktop, polly">
+    <link rel="icon" type="image/x-icon" href="https://avatars.githubusercontent.com/u/222807572">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <img src="https://avatars.githubusercontent.com/u/222807572" alt="Polly Logo" class="logo-img">
+          <span class="logo-text">Polly</span>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="#home" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="#features" class="nav-link">Features</a>
+          </li>
+          <li class="nav-item">
+            <a href="#installation" class="nav-link">Installation</a>
+          </li>
+          <li class="nav-item">
+            <a href="#documentation" class="nav-link">Docs</a>
+          </li>
+          <li class="nav-item">
+            <a href="#community" class="nav-link">Community</a>
+          </li>
+          <li class="nav-item">
+            <a href="https://github.com/pollypm/polly" class="nav-link github-link" target="_blank">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        </ul>
+        <div class="hamburger">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-container">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            Meet <span class="gradient-text">Polly</span>
+          </h1>
+          <p class="hero-subtitle">
+            A versatile software manager for desktop systems
+          </p>
+          <p class="hero-description">
+            Manage, install, and update software across a variety of desktop environments with ease.
+            Cross-platform compatibility meets powerful functionality.
+          </p>
+          <div class="hero-buttons">
+            <a href="#installation" class="btn btn-primary">
+              <i class="fas fa-download"></i>
+              Get Started
+            </a>
+            <a href="https://github.com/pollypm/polly" class="btn btn-secondary" target="_blank">
+              <i class="fab fa-github"></i>
+              View on GitHub
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat">
+              <img src="https://img.shields.io/github/stars/pollypm/polly?style=flat-square&logo=star&color=f2a900"
+                alt="GitHub Stars">
+            </div>
+            <div class="stat">
+              <img src="https://img.shields.io/github/forks/pollypm/polly?style=flat-square&logo=github&color=9059ff"
+                alt="Forks">
+            </div>
+            <div class="stat">
+              <img
+                src="https://img.shields.io/github/license/pollypm/polly?style=flat-square&logo=opensourceinitiative&color=34c759"
+                alt="License">
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="terminal-window">
+            <div class="terminal-header">
+              <div class="terminal-controls">
+                <span class="control red"></span>
+                <span class="control yellow"></span>
+                <span class="control green"></span>
+              </div>
+              <div class="terminal-title">Terminal</div>
+            </div>
+            <div class="terminal-body">
+              <div class="terminal-line">
+                <span class="prompt">$</span>
+                <span class="command">polly install nodejs</span>
+              </div>
+              <div class="terminal-line output">
+                <span class="success">✓ nodejs installed successfully</span>
+              </div>
+              <div class="terminal-line">
+                <span class="prompt">$</span>
+                <span class="command">polly list</span>
+              </div>
+              <div class="terminal-line output">
+                <span>📦 nodejs v20.10.0</span>
+              </div>
+              <div class="terminal-line output">
+                <span>📦 python v3.11.5</span>
+              </div>
+              <div class="terminal-line">
+                <span class="prompt">$</span>
+                <span class="cursor">|</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Why Choose Polly?</h2>
+          <p class="section-subtitle">
+            Powerful features designed to simplify software management across all platforms
+          </p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+            <h3 class="feature-title">Cross-Platform</h3>
+            <p class="feature-description">
+              Works seamlessly across Linux, macOS, and Windows. One tool for all your desktop environments.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <h3 class="feature-title">Easy Management</h3>
+            <p class="feature-description">
+              Simple commands to install, update, and remove software. No complex configurations required.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-puzzle-piece"></i>
+            </div>
+            <h3 class="feature-title">Extensible Plugins</h3>
+            <p class="feature-description">
+              Powerful plugin system that allows you to extend functionality and customize your workflow.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3 class="feature-title">Secure & Reliable</h3>
+            <p class="feature-description">
+              Built with security in mind. Verify packages and maintain system integrity.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <h3 class="feature-title">Fast Performance</h3>
+            <p class="feature-description">
+              Optimized for speed with efficient package resolution and parallel downloads.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="feature-title">Community Driven</h3>
+            <p class="feature-description">
+              Open source project with an active community contributing packages and improvements.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="installation">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Get Started in Seconds</h2>
+          <p class="section-subtitle">
+            Install Polly with a single command on UNIX-like systems
+          </p>
+        </div>
+        <div class="install-content">
+          <div class="install-steps">
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h3>Install Polly</h3>
+                <p>Run the installation script on Linux or macOS</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h3>Verify Installation</h3>
+                <p>Check that Polly is properly installed</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h3>Start Managing</h3>
+                <p>Begin installing and managing software</p>
+              </div>
+            </div>
+          </div>
+          <div class="install-commands">
+            <div class="command-block">
+              <div class="command-header">
+                <span class="command-title">Installation</span>
+                <button class="copy-btn"
+                  data-clipboard-text="curl -fsSL https://raw.githubusercontent.com/pollypm/polly/main/install.sh | sudo bash">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <code class="command-code">
+                            curl -fsSL https://raw.githubusercontent.com/pollypm/polly/main/install.sh | sudo bash
+                        </code>
+            </div>
+            <div class="command-block">
+              <div class="command-header">
+                <span class="command-title">Verify</span>
+                <button class="copy-btn" data-clipboard-text="polly --version">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <code class="command-code">
+                            polly --version
+                        </code>
+            </div>
+            <div class="command-block">
+              <div class="command-header">
+                <span class="command-title">Help</span>
+                <button class="copy-btn" data-clipboard-text="polly help">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <code class="command-code">
+                            polly help
+                        </code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Commands Section -->
+    <section id="commands" class="commands">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Available Commands</h2>
+          <p class="section-subtitle">
+            Everything you need to manage software efficiently
+          </p>
+        </div>
+        <div class="commands-grid">
+          <div class="command-card">
+            <div class="command-syntax">
+              <code>polly install &lt;package&gt;</code>
+            </div>
+            <p class="command-description">Install a new package</p>
+          </div>
+          <div class="command-card">
+            <div class="command-syntax">
+              <code>polly uninstall &lt;package&gt;</code>
+            </div>
+            <p class="command-description">Remove an installed package</p>
+          </div>
+          <div class="command-card">
+            <div class="command-syntax">
+              <code>polly list</code>
+            </div>
+            <p class="command-description">List all installed packages</p>
+          </div>
+          <div class="command-card">
+            <div class="command-syntax">
+              <code>polly search &lt;query&gt;</code>
+            </div>
+            <p class="command-description">Search for available packages</p>
+          </div>
+          <div class="command-card">
+            <div class="command-syntax">
+              <code>polly inspect &lt;package&gt;</code>
+            </div>
+            <p class="command-description">Show package information</p>
+          </div>
+          <div class="command-card">
+            <div class="command-syntax">
+              <code>polly upgrade</code>
+            </div>
+            <p class="command-description">Upgrade installed packages</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="documentation" class="documentation">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Documentation & Resources</h2>
+          <p class="section-subtitle">
+            Everything you need to master Polly
+          </p>
+        </div>
+        <div class="docs-grid">
+          <a href="https://github.com/pollypm/polly/wiki" class="doc-card" target="_blank">
+            <div class="doc-icon">
+              <i class="fas fa-book"></i>
+            </div>
+            <h3 class="doc-title">Wiki</h3>
+            <p class="doc-description">Comprehensive documentation and guides</p>
+          </a>
+          <a href="https://github.com/pollypm/polly/wiki/API" class="doc-card" target="_blank">
+            <div class="doc-icon">
+              <i class="fas fa-code"></i>
+            </div>
+            <h3 class="doc-title">API Reference</h3>
+            <p class="doc-description">Complete API documentation for developers</p>
+          </a>
+          <a href="https://github.com/pollypm/polly/wiki/Plugins" class="doc-card" target="_blank">
+            <div class="doc-icon">
+              <i class="fas fa-plug"></i>
+            </div>
+            <h3 class="doc-title">Plugin Development</h3>
+            <p class="doc-description">Learn how to create Polly plugins</p>
+          </a>
+          <a href="https://github.com/pollypm/polly/blob/main/CONTRIBUTING.md" class="doc-card" target="_blank">
+            <div class="doc-icon">
+              <i class="fas fa-hands-helping"></i>
+            </div>
+            <h3 class="doc-title">Contributing</h3>
+            <p class="doc-description">Guidelines for contributing to Polly</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Community Section -->
+    <section id="community" class="community">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Join Our Community</h2>
+          <p class="section-subtitle">
+            Connect with other Polly users and contributors
+          </p>
+        </div>
+        <div class="community-grid">
+          <a href="https://github.com/pollypm/polly/discussions" class="community-card" target="_blank">
+            <div class="community-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h3 class="community-title">Discussions</h3>
+            <p class="community-description">Ask questions and share ideas</p>
+          </a>
+          <a href="https://github.com/pollypm/polly/issues" class="community-card" target="_blank">
+            <div class="community-icon">
+              <i class="fas fa-bug"></i>
+            </div>
+            <h3 class="community-title">Issues</h3>
+            <p class="community-description">Report bugs and request features</p>
+          </a>
+          <a href="https://github.com/pollypm/polly" class="community-card" target="_blank">
+            <div class="community-icon">
+              <i class="fab fa-github"></i>
+            </div>
+            <h3 class="community-title">GitHub</h3>
+            <p class="community-description">View source code and contribute</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-left">
+            <div class="footer-logo">
+              <img src="https://avatars.githubusercontent.com/u/222807572" alt="Polly Logo" class="footer-logo-img">
+              <span class="footer-logo-text">Polly</span>
+            </div>
+            <p class="footer-description">
+              A versatile software manager for desktop systems.
+            </p>
+          </div>
+          <div class="footer-links">
+            <div class="footer-section">
+              <h4 class="footer-title">Product</h4>
+              <ul class="footer-list">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#commands">Commands</a></li>
+              </ul>
+            </div>
+            <div class="footer-section">
+              <h4 class="footer-title">Resources</h4>
+              <ul class="footer-list">
+                <li><a href="https://github.com/pollypm/polly/wiki" target="_blank">Documentation</a></li>
+                <li><a href="https://github.com/pollypm/polly/blob/main/CONTRIBUTING.md"
+                    target="_blank">Contributing</a></li>
+                <li><a href="https://github.com/pollypm/polly/blob/main/LICENSE" target="_blank">License</a></li>
+              </ul>
+            </div>
+            <div class="footer-section">
+              <h4 class="footer-title">Community</h4>
+              <ul class="footer-list">
+                <li><a href="https://github.com/pollypm/polly/discussions" target="_blank">Discussions</a></li>
+                <li><a href="https://github.com/pollypm/polly/issues" target="_blank">Issues</a></li>
+                <li><a href="https://github.com/pollypm/polly" target="_blank">GitHub</a></li>
+              </ul>
+            </div>
+            <div class="footer-section">
+              <h4 class="footer-title">Project</h4>
+              <ul class="footer-list">
+                <li><a href="about.html">About</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="footer-bottom-content">
+            <p class="footer-copyright">
+              © 2025 Polly. Licensed under the MIT License.
+            </p>
+            <div class="footer-social">
+              <a href="https://github.com/pollypm/polly" target="_blank" class="social-link">
+                <i class="fab fa-github"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+  </body>
+
+</html>

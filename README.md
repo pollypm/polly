@@ -5,7 +5,7 @@
 <h1 align="center">Polly</h1>
 
 <p align="center">
-  <em>A versatile software manager for all desktop systems.</em>
+  <em>A versatile software manager for desktop systems.</em>
 </p>
 
 <p align="center">
