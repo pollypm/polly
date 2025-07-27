@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 
 # Add project root to sys.path for imports
 project_root = os.path.abspath(
@@ -44,10 +45,41 @@ def read_ascii_art(file_path):
         return "[ASCII art not found]"
 
 
+def get_terminal_width():
+    """Get terminal width, with fallback for narrow terminals."""
+    try:
+        terminal_size = shutil.get_terminal_size()
+        return terminal_size.columns
+    except (OSError, AttributeError):
+        return 80  # Default fallback
+
+
+def should_hide_ascii_art(terminal_width):
+    """Determine if ASCII art should be hidden based on terminal width."""
+    # ASCII art is approximately 50 characters wide, help text needs ~40 more
+    # Add some margin for spacing
+    return terminal_width < 100
+
+
+def create_simple_header():
+    """Create a simple text header for narrow terminals."""
+    return """┌─ Polly Package Manager ─┐
+│        Help Menu        │
+└─────────────────────────┘"""
+
+
 def help_main():
     """Display the help message with ASCII art."""
-    ascii_art_path = os.path.join(os.path.dirname(__file__), "../polly.txt")
-    ascii_art = read_ascii_art(ascii_art_path)
+    terminal_width = get_terminal_width()
+    hide_ascii_art = should_hide_ascii_art(terminal_width)
+
+    if hide_ascii_art:
+        # Use simple header for narrow terminals
+        ascii_art = create_simple_header()
+    else:
+        # Use full ASCII art for wider terminals
+        ascii_art_path = os.path.join(os.path.dirname(__file__), "../polly.txt")
+        ascii_art = read_ascii_art(ascii_art_path)
 
     help_text = """{p}Polly {g}- {s}Help
 {g}Version {version} (Latest: {p}{latest_version}{g})
@@ -68,16 +100,7 @@ def help_main():
 {s}For more information, visit: {p}https://github.com/pollypm/polly
 """
 
-    art_lines = ascii_art.splitlines()
-    help_lines = help_text.splitlines()
-
-    # Ensure both lists have the same length
-    max_lines = max(len(art_lines), len(help_lines))
-    art_lines += [""] * (max_lines - len(art_lines))
-    help_lines += [""] * (max_lines - len(help_lines))
-
     # Color setup
-    spacing = "   "
     primary_color = hex_to_ansi(PRIMARY_COLOR)
     secondary_color = hex_to_ansi(SECONDARY_COLOR)
     grey_color = hex_to_ansi("#808080")
@@ -89,17 +112,63 @@ def help_main():
         else "No"
     )
 
-    print("\n")
-    for art, help_line in zip(art_lines, help_lines):
-        # Replace color placeholders and version info
-        formatted_help = (
-            help_line.replace("{p}", primary_color)
-            .replace("{s}", secondary_color)
-            .replace("{g}", grey_color)
-            .replace("{latest_version}", latest_version()[:7])
-            .replace("{version}", get_current_version()[:7])
-            .replace("{update_required}", update_status)
-        )
+    if hide_ascii_art:
+        # Simple layout for narrow terminals
+        print("\n")
 
-        print(f"  {art:<40}{RESET}{spacing}{formatted_help}{RESET}")
+        # Display the simple header with colors
+        header_lines = ascii_art.splitlines()
+        for line in header_lines:
+            colored_line = line.replace(
+                "Polly Package Manager", f"{primary_color}Polly Package Manager{RESET}"
+            )
+            colored_line = colored_line.replace(
+                "Help Menu", f"{secondary_color}Help Menu{RESET}"
+            )
+            print(f"  {colored_line}")
+
+        print()
+
+        # Display help text without side-by-side layout
+        help_lines = help_text.splitlines()
+        for help_line in help_lines:
+            formatted_help = (
+                help_line.replace("{p}", primary_color)
+                .replace("{s}", secondary_color)
+                .replace("{g}", grey_color)
+                .replace("{latest_version}", latest_version()[:7])
+                .replace("{version}", get_current_version()[:7])
+                .replace("{update_required}", update_status)
+            )
+            print(f"  {formatted_help}{RESET}")
+    else:
+        # Original side-by-side layout for wider terminals
+        art_lines = ascii_art.splitlines()
+        help_lines = help_text.splitlines()
+
+        # Ensure both lists have the same length
+        max_lines = max(len(art_lines), len(help_lines))
+        art_lines += [""] * (max_lines - len(art_lines))
+        help_lines += [""] * (max_lines - len(help_lines))
+
+        spacing = "   "
+
+        print("\n")
+        for art, help_line in zip(art_lines, help_lines):
+            # Replace color placeholders and version info
+            formatted_help = (
+                help_line.replace("{p}", primary_color)
+                .replace("{s}", secondary_color)
+                .replace("{g}", grey_color)
+                .replace("{latest_version}", latest_version()[:7])
+                .replace("{version}", get_current_version()[:7])
+                .replace("{update_required}", update_status)
+            )
+
+            print(f"  {art:<40}{RESET}{spacing}{formatted_help}{RESET}")
+
     print("\n")
+
+
+if __name__ == "__main__":
+    help_main()
