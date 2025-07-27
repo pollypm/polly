@@ -1,5 +1,9 @@
 name: Issue and PR Helper
 
+permissions:
+  contents: read
+  issues: write
+
 on:
   issues:
     types: [opened]
