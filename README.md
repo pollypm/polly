@@ -45,7 +45,7 @@
 
 ## Overview
 
-_Polly_ is designed to help you manage, install, and update software across a variety of desktop environments.
+**Polly** is designed to help you manage, install, and update software across a variety of desktop environments.
 
 ## Features
 

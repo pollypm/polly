@@ -44,7 +44,7 @@ def read_ascii_art(file_path):
         return "[ASCII art not found]"
 
 
-def display_help():
+def help_main():
     """Display the help message with ASCII art."""
     ascii_art_path = os.path.join(os.path.dirname(__file__), "../polly.txt")
     ascii_art = read_ascii_art(ascii_art_path)
@@ -58,6 +58,7 @@ def display_help():
 
 {s}Available Commands:
   {p}help        {g}Show this help message
+  {p}update      {g}Update Polly to the latest version
   {p}install     {g}Install a Polly package
   {p}uninstall   {g}Uninstall a Polly package
   {p}list        {g}List installed Polly packages
@@ -103,7 +104,3 @@ def display_help():
 
         print(f"  {art:<40}{RESET}{spacing}{formatted_help}{RESET}")
     print("\n")
-
-
-if __name__ == "__main__":
-    display_help()

@@ -1,0 +1,8 @@
+{
+  "name": "Polly Example Plugin",
+  "description": "A simple example plugin for Polly",
+  "version": "1.0.0",
+  "author": "The Polly Developers",
+  "license": "MIT",
+  "homepage": "https://github.com/pollypm/polly"
+}
