@@ -1,17 +1,25 @@
 #!/bin/bash
 
-INSTALL_DIR="/opt/polly"
+# Default installation directory
+DEFAULT_INSTALL_DIR="/opt/polly"
 
-echo "Starting Polly installation..."
+# Prompt user for installation directory
+echo "Enter installation directory (press Enter for default: $DEFAULT_INSTALL_DIR):"
+read -r INSTALL_DIR
 
-# Remove the old installation directory if it exists.
+# Use default if user input is empty
+INSTALL_DIR=${INSTALL_DIR:-$DEFAULT_INSTALL_DIR}
+
+echo "Starting Polly installation to $INSTALL_DIR..."
+
+# Remove the old installation directory if it exists
 if [ -d "$INSTALL_DIR" ]; then
   echo "Removing old installation directory: $INSTALL_DIR"
   sudo rm -rf "$INSTALL_DIR" >/dev/null 2>&1
 fi
 
 echo "Configuring git safe directory..."
-git config --global --add safe.directory /opt/polly >/dev/null 2>&1
+git config --global --add safe.directory "$INSTALL_DIR" >/dev/null 2>&1
 
 echo "Cloning Polly repository..."
 sudo git clone https://github.com/pollypm/polly.git "$INSTALL_DIR" >/dev/null 2>&1
