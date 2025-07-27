@@ -8,6 +8,7 @@ def dispatch_command(args):
     """
     if not args:
         display_help()
+        return
 
     command = args[0]
     command_args = args[1:]
