@@ -1,7 +1,6 @@
 import os
 import sys
 import threading
-from functools import lru_cache
 import time
 
 # Add project root to sys.path for imports
@@ -38,94 +37,22 @@ GREY_ANSI = "\033[38;2;128;128;128m"  # #808080
 # Cache for ASCII art
 _ascii_art_cache = None
 
-# Cache for version info with timeout
-_version_cache = {"data": None, "timestamp": 0, "timeout": 300}  # 5 minute cache
 
-
-def get_version_info_cached():
-    """Get version info with caching to avoid repeated network calls."""
-    current_time = time.time()
-
-    # Check if cache is still valid
-    if (
-        _version_cache["data"] is not None
-        and current_time - _version_cache["timestamp"] < _version_cache["timeout"]
-    ):
-        return _version_cache["data"]
-
-    # Try to get fresh data with a short timeout
-    try:
-        current_ver = get_current_version()[:7]
-        latest_ver = "..."  # Placeholder while loading
-        update_status = "..."  # Placeholder while loading
-
-        # Start background thread to fetch latest version
-        def fetch_latest():
-            try:
-                latest = latest_version()[:7]
-                update_req = update_required()
-                update_text = (
-                    f"Yes {GREY_ANSI}({PRIMARY_ANSI}use {SECONDARY_ANSI}polly update{GREY_ANSI})"
-                    if update_req
-                    else "No"
-                )
-                # Update cache with real data
-                _version_cache["data"] = {
-                    "current": current_ver,
-                    "latest": latest,
-                    "update_status": update_text,
-                }
-                _version_cache["timestamp"] = time.time()
-            except:
-                pass  # Fail silently
-
-        # If we have old cached data, use it while updating in background
-        if _version_cache["data"] is not None:
-            threading.Thread(target=fetch_latest, daemon=True).start()
-            return _version_cache["data"]
-
-        # For first time, return basic info immediately
-        basic_data = {
-            "current": current_ver,
-            "latest": "fetching...",
-            "update_status": "checking...",
-        }
-
-        # Start background fetch
-        threading.Thread(target=fetch_latest, daemon=True).start()
-        return basic_data
-
-    except Exception:
-        # Fallback to basic info
-        return {"current": "Unknown", "latest": "Unknown", "update_status": "Unknown"}
-
-
-def get_cached_ascii_art():
-    """Get ASCII art with caching."""
-    global _ascii_art_cache
-    if _ascii_art_cache is None:
-        ascii_art_path = os.path.join(os.path.dirname(__file__), "../polly.txt")
-        try:
-            with open(ascii_art_path, "r", encoding="utf-8") as f:
-                _ascii_art_cache = f.read()
-        except FileNotFoundError:
-            _ascii_art_cache = "[ASCII art not found]"
-    return _ascii_art_cache
-
-
-def help_main():
-    """Display the help message with ASCII art."""
+def display_help_with_live_updates():
+    """Display help and update version info in real-time."""
     ascii_art = get_cached_ascii_art()
 
-    # Get version info (with smart caching to avoid delays)
-    version_info = get_version_info_cached()
-    current_ver = version_info["current"]
-    latest_ver = version_info["latest"]
-    update_status = version_info["update_status"]
+    # Get current version immediately (fast file read)
+    try:
+        current_ver = get_current_version()[:7]
+    except:
+        current_ver = "Unknown"
 
-    help_text = f"""{PRIMARY_ANSI}Polly {GREY_ANSI}- {SECONDARY_ANSI}Help
-{GREY_ANSI}Version {current_ver} (Latest: {PRIMARY_ANSI}{latest_ver}{GREY_ANSI})
-{GREY_ANSI}Updates Available: {PRIMARY_ANSI}{update_status}{GREY_ANSI}
+    # Initial display with placeholders
+    def create_help_text(current, latest="fetching...", status="checking..."):
+        return f"""{PRIMARY_ANSI}Polly {GREY_ANSI}- {SECONDARY_ANSI}Help
+{GREY_ANSI}Version {current} (Latest: {PRIMARY_ANSI}{latest}{GREY_ANSI})
+{GREY_ANSI}Updates Available: {PRIMARY_ANSI}{status}{GREY_ANSI}
 
 {SECONDARY_ANSI}Usage:
   {PRIMARY_ANSI}polly {GREY_ANSI}<command> [options]
@@ -143,17 +70,62 @@ def help_main():
 {SECONDARY_ANSI}For more information, visit: {PRIMARY_ANSI}https://github.com/pollypm/polly
 """
 
-    art_lines = ascii_art.splitlines()
-    help_lines = help_text.splitlines()
+    # Display initial help immediately
+    def display_help(help_text):
+        art_lines = ascii_art.splitlines()
+        help_lines = help_text.splitlines()
 
-    # Ensure both lists have the same length
-    max_lines = max(len(art_lines), len(help_lines))
-    art_lines += [""] * (max_lines - len(art_lines))
-    help_lines += [""] * (max_lines - len(help_lines))
+        max_lines = max(len(art_lines), len(help_lines))
+        art_lines += [""] * (max_lines - len(art_lines))
+        help_lines += [""] * (max_lines - len(help_lines))
 
-    # Print with minimal processing
-    spacing = "   "
-    print("\n")
-    for art, help_line in zip(art_lines, help_lines):
-        print(f"  {art:<40}{RESET}{spacing}{help_line}{RESET}")
-    print("\n")
+        spacing = "   "
+        print("\n")
+        for art, help_line in zip(art_lines, help_lines):
+            print(f"  {art:<40}{RESET}{spacing}{help_line}{RESET}")
+        print("\n")
+
+    # Show initial help immediately
+    initial_help = create_help_text(current_ver)
+    display_help(initial_help)
+
+    # Background thread to fetch and update version info
+    def fetch_and_update():
+        try:
+            latest_ver = latest_version()[:7]
+            update_req = update_required()
+            update_status = (
+                f"Yes {GREY_ANSI}({PRIMARY_ANSI}use {SECONDARY_ANSI}polly update{GREY_ANSI})"
+                if update_req
+                else "No"
+            )
+
+            # Clear screen and redisplay with updated info
+            print("\033[H\033[2J", end="")  # Clear screen and move cursor to top
+            updated_help = create_help_text(current_ver, latest_ver, update_status)
+            display_help(updated_help)
+
+        except Exception:
+            # If network fails, just leave the initial display
+            pass
+
+    # Start background update
+    threading.Thread(target=fetch_and_update, daemon=True).start()
+
+
+def get_cached_ascii_art():
+    """Get ASCII art with caching."""
+    global _ascii_art_cache
+    if _ascii_art_cache is None:
+        ascii_art_path = os.path.join(os.path.dirname(__file__), "../polly.txt")
+        try:
+            with open(ascii_art_path, "r", encoding="utf-8") as f:
+                _ascii_art_cache = f.read()
+        except FileNotFoundError:
+            _ascii_art_cache = "[ASCII art not found]"
+    return _ascii_art_cache
+
+
+def help_main():
+    """Display the help message with ASCII art and live updates."""
+    display_help_with_live_updates()
