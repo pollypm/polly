@@ -9,10 +9,6 @@
 </p>
 
 <p align="center">
-  <!-- Release -->
-  <a href="https://github.com/pollypm/polly/releases">
-    <img src="https://img.shields.io/github/v/release/pollypm/polly?style=flat-square&logo=github&color=4f8cc9" alt="Release">
-  </a>
   <!-- License -->
   <a href="https://github.com/pollypm/polly/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/pollypm/polly?style=flat-square&logo=opensourceinitiative&color=34c759" alt="License">
