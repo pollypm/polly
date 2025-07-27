@@ -62,7 +62,6 @@ def help_main():
   {p}install     {g}Install a Polly package
   {p}uninstall   {g}Uninstall a Polly package
   {p}list        {g}List installed Polly packages
-  {p}search      {g}Search for Polly packages
   {p}inspect     {g}Show information about a Polly package
   {p}upgrade     {g}Upgrade Polly packages
 
