@@ -5,8 +5,68 @@ from polly.core import inspect_package
 from polly.utils import print_header, format_message, get_colors, format_size
 
 
-def display_inspection_data(data):
+def display_inspection_data(data, simple_mode=False):
     """Display the package inspection data in a formatted way."""
+    if simple_mode:
+        # Simple plain text format for system integration
+        name = data['name']
+        install_type = data['install_type']
+        path = data['path']
+        install_date = data['stats']['install_date']
+        size = format_size(data['stats']['size'])
+        file_count = data['stats']['file_count']
+        
+        # Basic info
+        print(f"NAME|{name}")
+        print(f"TYPE|{install_type}")
+        print(f"PATH|{path}")
+        print(f"INSTALLED|{install_date}")
+        print(f"SIZE|{size}")
+        print(f"FILES|{file_count}")
+        
+        # Executable status
+        if data['executable_status']:
+            executable_path = data['executable_status']['path']
+            executable_exists = data['executable_status']['exists']
+            print(f"EXECUTABLE_PATH|{executable_path}")
+            print(f"EXECUTABLE_EXISTS|{executable_exists}")
+        else:
+            print("EXECUTABLE_PATH|N/A")
+            print("EXECUTABLE_EXISTS|N/A")
+        
+        # Entry points
+        metadata = data['metadata']
+        if 'entryPoint' in metadata and isinstance(metadata['entryPoint'], list):
+            for entry_point in metadata['entryPoint']:
+                print(f"ENTRY_POINT|{entry_point}")
+        
+        # Uninstall commands
+        if 'uninstallCommands' in metadata and isinstance(metadata['uninstallCommands'], list):
+            for command in metadata['uninstallCommands']:
+                print(f"UNINSTALL_COMMAND|{command}")
+        
+        # Git info
+        if data['git_info']:
+            git_info = data['git_info']
+            print(f"GIT_ORIGIN|{git_info.get('origin', 'N/A')}")
+            print(f"GIT_BRANCH|{git_info.get('branch', 'N/A')}")
+            if 'last_commit' in git_info:
+                commit = git_info['last_commit']
+                print(f"GIT_LAST_COMMIT|{commit['hash']}|{commit['message']}|{commit['author']}|{commit['date']}")
+        
+        # Additional metadata
+        if data['additional_metadata']:
+            for key, value in data['additional_metadata'].items():
+                if isinstance(value, (str, int, float, bool)):
+                    print(f"METADATA_{key.upper()}|{value}")
+        
+        # Package contents
+        if data['contents']:
+            for file_info in data['contents']:
+                print(f"FILE|{file_info['name']}|{file_info['size']}")
+        
+        return
+    
     colors = get_colors()
     
     # Basic information
@@ -88,6 +148,11 @@ def inspect_main(args=None):
         "package_name",
         help="Name of the package to inspect"
     )
+    parser.add_argument(
+        "--simple",
+        action="store_true",
+        help="Output in simple plain text format for system integration",
+    )
     
     try:
         parsed_args = parser.parse_args(args)
@@ -95,26 +160,29 @@ def inspect_main(args=None):
         return
     
     package_name = parsed_args.package_name
+    simple_mode = parsed_args.simple
     
-    # Print header
-    print_header("Polly", "Package Inspection")
+    # Print header (unless in simple mode)
+    if not simple_mode:
+        print_header("Polly", "Package Inspection")
     
     # Inspect the package
     try:
         success, message, data = inspect_package(package_name)
         
         if success and data:
-            display_inspection_data(data)
-            print(f"\n{format_message('success', 'Package inspection completed')}\n")
+            display_inspection_data(data, simple_mode)
+            if not simple_mode:
+                print(f"\n{format_message('success', 'Package inspection completed')}\n")
         else:
-            print(format_message('error', message))
+            print(format_message('error', message, simple_mode))
             sys.exit(1)
             
     except KeyboardInterrupt:
-        print(format_message('error', "Inspection cancelled by user"))
+        print(format_message('error', "Inspection cancelled by user", simple_mode))
         sys.exit(1)
     except Exception as e:
-        print(format_message('error', f"Unexpected error during inspection: {e}"))
+        print(format_message('error', f"Unexpected error during inspection: {e}", simple_mode))
         sys.exit(1)
 
 

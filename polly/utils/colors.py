@@ -30,8 +30,23 @@ def get_colors():
     }
 
 
-def format_message(message_type, message):
+def format_message(message_type, message, simple_mode=False):
     """Format a message with appropriate color and symbol."""
+    if simple_mode:
+        # Simple plain text format for system integration
+        if message_type == "error":
+            return f"ERROR: {message}"
+        elif message_type == "success":
+            return f"SUCCESS: {message}"
+        elif message_type == "warning":
+            return f"WARNING: {message}"
+        elif message_type == "info":
+            return f"INFO: {message}"
+        elif message_type == "progress":
+            return f"PROGRESS: {message}"
+        else:
+            return message
+    
     colors = get_colors()
 
     symbols = {
@@ -47,8 +62,16 @@ def format_message(message_type, message):
     return f"  {symbol} {colors['grey']}{message}{colors['reset']}"
 
 
-def print_header(title, subtitle=None):
+def print_header(title, subtitle=None, simple_mode=False):
     """Print a formatted header."""
+    if simple_mode:
+        # Simple plain text header for system integration
+        if subtitle:
+            print(f"{title} - {subtitle}")
+        else:
+            print(title)
+        return
+    
     colors = get_colors()
 
     if subtitle:

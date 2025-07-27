@@ -4,8 +4,23 @@ from polly.core import list_packages
 from polly.utils import print_header, format_message, get_colors
 
 
-def display_packages_simple(packages_data):
+def display_packages_simple(packages_data, simple_mode=False):
     """Display packages in simple format."""
+    if simple_mode:
+        # Simple plain text format for system integration
+        packages = packages_data["packages"]
+        if not packages:
+            print("NO_PACKAGES")
+            return
+        
+        for package in packages:
+            # Format: NAME|TYPE|SIZE|INSTALL_DATE|HAS_METADATA
+            install_date = package["install_date"].split(" ")[0]  # Just the date part
+            print(f"{package['name']}|{package['install_type']}|{package['size_formatted']}|{install_date}|{package['has_metadata']}")
+        
+        print(f"TOTAL|{packages_data['total_count']}|{packages_data['total_size_formatted']}")
+        return
+    
     colors = get_colors()
     packages = packages_data["packages"]
 
@@ -48,8 +63,32 @@ def display_packages_simple(packages_data):
     )
 
 
-def display_packages_detailed(packages_data):
+def display_packages_detailed(packages_data, simple_mode=False):
     """Display packages in detailed format."""
+    if simple_mode:
+        # Simple plain text format for system integration
+        packages = packages_data["packages"]
+        if not packages:
+            print("NO_PACKAGES")
+            return
+        
+        for package in packages:
+            # Format: NAME|TYPE|SIZE|INSTALL_DATE|LOCATION|HAS_METADATA|VERSION|DESCRIPTION|EXECUTABLE_PATH|EXECUTABLE_EXISTS
+            version = package.get('version', 'N/A')
+            description = package.get('description', 'N/A').replace('|', ' ')  # Remove pipes from description
+            executable_path = 'N/A'
+            executable_exists = 'N/A'
+            
+            if package["has_metadata"] and "executable_info" in package and package["executable_info"]:
+                executable_info = package["executable_info"]
+                executable_path = executable_info['path']
+                executable_exists = str(executable_info['exists'])
+            
+            print(f"{package['name']}|{package['install_type']}|{package['size_formatted']}|{package['install_date']}|{package['path']}|{package['has_metadata']}|{version}|{description}|{executable_path}|{executable_exists}")
+        
+        print(f"TOTAL|{packages_data['total_count']}|{packages_data['total_size_formatted']}")
+        return
+    
     colors = get_colors()
     packages = packages_data["packages"]
 
@@ -128,6 +167,11 @@ def list_main(args=None):
         action="store_true",
         help="Show detailed information for each package",
     )
+    parser.add_argument(
+        "--simple",
+        action="store_true",
+        help="Output in simple plain text format for system integration",
+    )
 
     try:
         parsed_args = parser.parse_args(args)
@@ -135,31 +179,34 @@ def list_main(args=None):
         return
 
     detailed = parsed_args.detailed
+    simple_mode = parsed_args.simple
 
-    # Print header
-    print_header("Polly", "Installed Packages")
+    # Print header (unless in simple mode)
+    if not simple_mode:
+        print_header("Polly", "Installed Packages")
 
     # List the packages
     try:
         success, message, packages_data = list_packages(detailed)
 
         if not success:
-            print(format_message("error", message))
+            print(format_message("error", message, simple_mode))
             sys.exit(1)
 
         # Display packages
         if detailed:
-            display_packages_detailed(packages_data)
+            display_packages_detailed(packages_data, simple_mode)
         else:
-            display_packages_simple(packages_data)
+            display_packages_simple(packages_data, simple_mode)
 
-        print()
+        if not simple_mode:
+            print()
 
     except KeyboardInterrupt:
-        print(format_message("error", "Listing cancelled by user"))
+        print(format_message("error", "Listing cancelled by user", simple_mode))
         sys.exit(1)
     except Exception as e:
-        print(format_message("error", f"Unexpected error during listing: {e}"))
+        print(format_message("error", f"Unexpected error during listing: {e}", simple_mode))
         sys.exit(1)
 
 

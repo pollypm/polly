@@ -44,8 +44,30 @@ def read_ascii_art(file_path):
         return "[ASCII art not found]"
 
 
-def help_main():
+def help_main(args=None):
     """Display the help message with ASCII art."""
+    # Check for simple mode
+    simple_mode = False
+    if args and "--simple" in args:
+        simple_mode = True
+    
+    if simple_mode:
+        # Simple plain text format for system integration
+        print("POLLY_HELP")
+        print("VERSION|" + get_current_version()[:7])
+        print("LATEST_VERSION|" + latest_version()[:7])
+        print("UPDATE_REQUIRED|" + str(update_required()))
+        print("COMMAND|help|Show this help message")
+        print("COMMAND|update|Update Polly to the latest version")
+        print("COMMAND|install|Install a Polly package")
+        print("COMMAND|uninstall|Uninstall a Polly package")
+        print("COMMAND|list|List installed Polly packages")
+        print("COMMAND|search|Search for Polly packages")
+        print("COMMAND|inspect|Show information about a Polly package")
+        print("COMMAND|upgrade|Upgrade Polly packages")
+        print("WEBSITE|https://github.com/pollypm/polly")
+        return
+    
     ascii_art_path = os.path.join(os.path.dirname(__file__), "../polly.txt")
     ascii_art = read_ascii_art(ascii_art_path)
 

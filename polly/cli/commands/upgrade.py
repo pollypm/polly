@@ -4,8 +4,31 @@ from polly.core import upgrade_packages, check_package_updates, get_upgrade_summ
 from polly.utils import print_header, format_message, get_colors, format_size
 
 
-def display_upgrade_summary(upgradeable_packages, error_packages):
+def display_upgrade_summary(upgradeable_packages, error_packages, simple_mode=False):
     """Display the upgrade summary."""
+    if simple_mode:
+        # Simple plain text format for system integration
+        if error_packages:
+            for package in error_packages:
+                print(f"ERROR_PACKAGE|{package}")
+        
+        if not upgradeable_packages:
+            print("NO_UPGRADES_AVAILABLE")
+            return False
+        
+        for package in upgradeable_packages:
+            package_name = package["name"]
+            update_info = package["update_info"]
+            package_size = package["size"]
+            
+            print(f"UPGRADE_AVAILABLE|{package_name}|{update_info['current_commit']}|{update_info['remote_commit']}|{format_size(package_size)}")
+            
+            if update_info["commit_messages"]:
+                for msg in update_info["commit_messages"][:3]:
+                    print(f"COMMIT_MESSAGE|{package_name}|{msg.strip()}")
+        
+        return True
+    
     colors = get_colors()
 
     if error_packages:
@@ -57,6 +80,7 @@ def display_upgrade_summary(upgradeable_packages, error_packages):
         print()
 
     # Show disk space information
+    summary = get_upgrade_summary(upgradeable_packages)
     print(f"  {colors['info']}Disk Space Summary:{colors['reset']}")
     print(
         f"    {colors['grey']}Total package size: {format_size(summary['total_size'])}{colors['reset']}"
@@ -90,6 +114,11 @@ def upgrade_main(args=None):
         action="store_true",
         help="Only check for updates, don't upgrade",
     )
+    parser.add_argument(
+        "--simple",
+        action="store_true",
+        help="Output in simple plain text format for system integration",
+    )
 
     try:
         parsed_args = parser.parse_args(args)
@@ -98,38 +127,49 @@ def upgrade_main(args=None):
 
     skip_confirmation = parsed_args.yes
     check_only = parsed_args.check_only
+    simple_mode = parsed_args.simple
 
-    # Print header
-    print_header("Polly", "Package Upgrade")
+    # Print header (unless in simple mode)
+    if not simple_mode:
+        print_header("Polly", "Package Upgrade")
 
     # Check for updates
-    print(format_message("progress", "Scanning installed packages..."))
+    if simple_mode:
+        print("PROGRESS|Scanning installed packages")
+    else:
+        print(format_message("progress", "Scanning installed packages..."))
 
     try:
         upgradeable_packages, error_packages = check_package_updates()
 
-        print(format_message("progress", "Checking for updates..."))
+        if simple_mode:
+            print("PROGRESS|Checking for updates")
+        else:
+            print(format_message("progress", "Checking for updates..."))
 
         # Display results
         if not upgradeable_packages and not error_packages:
-            print(format_message("success", "All packages are up to date!"))
+            print(format_message("success", "All packages are up to date!", simple_mode))
             return
 
-        has_upgrades = display_upgrade_summary(upgradeable_packages, error_packages)
+        has_upgrades = display_upgrade_summary(upgradeable_packages, error_packages, simple_mode)
 
         if not has_upgrades:
             return
 
         if check_only:
-            print(
-                format_message(
-                    "info", "Check complete. Use 'polly upgrade' to upgrade packages."
+            if simple_mode:
+                print("INFO|Check complete. Use 'polly upgrade' to upgrade packages.")
+            else:
+                print(
+                    format_message(
+                        "info", "Check complete. Use 'polly upgrade' to upgrade packages."
+                    )
                 )
-            )
             return
 
-        # Confirmation prompt
-        if not skip_confirmation:
+        # Confirmation prompt (unless in simple mode or -y flag)
+        if not skip_confirmation and not simple_mode:
             print(
                 f"  {colors['primary']}?{colors['reset']} {colors['grey']}Do you want to continue with the upgrade? (Y/n):{colors['reset']} ",
                 end="",
@@ -141,8 +181,11 @@ def upgrade_main(args=None):
             print()
 
         # Perform upgrades
-        print(format_message("progress", "Upgrading packages..."))
-        print()
+        if simple_mode:
+            print("PROGRESS|Upgrading packages")
+        else:
+            print(format_message("progress", "Upgrading packages..."))
+            print()
 
         success, message, results = upgrade_packages()
 
@@ -152,31 +195,38 @@ def upgrade_main(args=None):
                 format_message(
                     "success",
                     f"Successfully upgraded: {', '.join(results['successful'])}",
+                    simple_mode
                 )
             )
 
         if results["failed"]:
             print(
                 format_message(
-                    "error", f"Failed to upgrade: {', '.join(results['failed'])}"
+                    "error", f"Failed to upgrade: {', '.join(results['failed'])}", simple_mode
                 )
             )
 
         if success:
-            print(
-                f"\n{format_message('success', 'All packages upgraded successfully!')}\n"
-            )
+            if simple_mode:
+                print("SUCCESS|All packages upgraded successfully!")
+            else:
+                print(
+                    f"\n{format_message('success', 'All packages upgraded successfully!')}\n"
+                )
         else:
-            print(
-                f"\n{format_message('warning', 'Some packages failed to upgrade. Check the errors above.')}\n"
-            )
+            if simple_mode:
+                print("WARNING|Some packages failed to upgrade. Check the errors above.")
+            else:
+                print(
+                    f"\n{format_message('warning', 'Some packages failed to upgrade. Check the errors above.')}\n"
+                )
             sys.exit(1)
 
     except KeyboardInterrupt:
-        print(format_message("error", "Upgrade cancelled by user"))
+        print(format_message("error", "Upgrade cancelled by user", simple_mode))
         sys.exit(1)
     except Exception as e:
-        print(format_message("error", f"Unexpected error during upgrade: {e}"))
+        print(format_message("error", f"Unexpected error during upgrade: {e}", simple_mode))
         sys.exit(1)
 
 
