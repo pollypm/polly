@@ -10,7 +10,7 @@ def download_package(repo_url, dest_dir=None):
     :return: None
     :raises: subprocess.CalledProcessError if git clone fails
     """
-    cmd = ["git", "clone", repo_url]
+    cmd = ["sudo", "git", "clone", repo_url]
     if dest_dir:
         cmd.append(dest_dir)
     try:
