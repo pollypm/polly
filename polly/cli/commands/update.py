@@ -1,11 +1,13 @@
 import subprocess
 import sys
 from colorama import init, Fore, Style
+import os
 
 init(autoreset=True)
 
 
 def run_command(command, description):
+    cwd = os.getcwd()
     print(f"{Fore.CYAN}➤ {description}...", flush=True)
     try:
         # Run command and show output live
@@ -15,6 +17,7 @@ def run_command(command, description):
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
+            cwd=cwd,
         )
         while True:
             output = process.stdout.readline()
