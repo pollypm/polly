@@ -2,16 +2,15 @@
 
 INSTALL_DIR="/opt/polly"
 
-# Clone files from the Polly repository
-# and move them to the $INSTALL_DIR directory.
-sudo git clone https://github.com/pollypm/polly.git "$INSTALL_DIR"
-sudo mv "$INSTALL_DIR/polly/"* "$INSTALL_DIR/"
-sudo mv "$INSTALL_DIR/polly/".* "$INSTALL_DIR/" 2>/dev/null || true
-sudo rm -rf "$INSTALL_DIR/polly"
+# Fix git thing
+git config --global --add safe.directory /opt/polly
 
-# Creates a file with the latest tag version of Polly.
-latest_tag=$(git -C "$INSTALL_DIR" describe --tags $(git -C "$INSTALL_DIR" rev-list --tags --max-count=1))
-echo "$latest_tag" | sudo tee "$INSTALL_DIR/latest" >/dev/null
+# Clone files from the Polly repository.
+sudo git clone https://github.com/pollypm/polly.git "$INSTALL_DIR"
+
+# Creates a file with the latest commit version of Polly.
+latest_commit=$(git -C "$INSTALL_DIR" rev-parse HEAD)
+echo "$latest_commit" | sudo tee "$INSTALL_DIR/latest" >/dev/null
 
 # Create a simple script that is run with the command `polly` that
 # launches the Polly CLI.
