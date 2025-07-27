@@ -16,6 +16,9 @@ git config --global --add safe.directory /opt/polly >/dev/null 2>&1
 echo "Cloning Polly repository..."
 sudo git clone https://github.com/pollypm/polly.git "$INSTALL_DIR" >/dev/null 2>&1
 
+echo "Installing required Python packages..."
+sudo pip3 install -r "$INSTALL_DIR/requirements.txt" >/dev/null 2>&1
+
 echo "Saving latest commit hash..."
 latest_commit=$(git -C "$INSTALL_DIR" rev-parse HEAD 2>/dev/null)
 echo "$latest_commit" | sudo tee "$INSTALL_DIR/latest" >/dev/null
