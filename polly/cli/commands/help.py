@@ -96,8 +96,8 @@ def display_help():
             help_line.replace("{p}", primary_color)
             .replace("{s}", secondary_color)
             .replace("{g}", grey_color)
-            .replace("{latest_version}", latest_version())
-            .replace("{version}", get_current_version())
+            .replace("{latest_version}", latest_version()[:7])
+            .replace("{version}", get_current_version()[:7])
             .replace("{update_required}", update_status)
         )
 
