@@ -3,6 +3,7 @@ name: Auto Label
 permissions:
   contents: read
   pull-requests: write
+  issues: write
 
 on:
   pull_request:
@@ -11,9 +12,19 @@ on:
     types: [opened, edited, labeled, unlabeled]
 
 jobs:
-  auto-label:
+  auto-label-pr:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/labeler@v5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  auto-label-issues:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: github/issue-labeler@v3.4
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
