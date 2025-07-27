@@ -1,5 +1,10 @@
 name: Issue and PR Helper
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 on:
   issues:
     types: [opened]
@@ -33,10 +38,3 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           pr-message: |
             🎉 Thank you for your first pull request! A maintainer will review it soon.
-
-  auto-assign:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: kentaro-m/auto-assign-action@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
