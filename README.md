@@ -13,10 +13,6 @@
   <a href="https://github.com/pollypm/polly/releases">
     <img src="https://img.shields.io/github/v/release/pollypm/polly?style=flat-square&logo=github&color=4f8cc9" alt="Release">
   </a>
-  <!-- Build -->
-  <a href="https://github.com/pollypm/polly/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/pollypm/polly/ci.yml?style=flat-square&logo=githubactions&label=CI&color=2b2d42" alt="Build Status">
-  </a>
   <!-- License -->
   <a href="https://github.com/pollypm/polly/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/pollypm/polly?style=flat-square&logo=opensourceinitiative&color=34c759" alt="License">
