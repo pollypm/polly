@@ -75,7 +75,7 @@ We welcome contributions! Please see the [Contributing](CONTRIBUTING.md) file fo
 
 ## Code of Conduct
 
-Please read the [Code of Condict](CODE_OF_CONDUCT.md) to know what rules our community follows.
+Please read the [Code of Conduct](CODE_OF_CONDUCT.md) to know what rules our community follows.
 
 ## License
 
