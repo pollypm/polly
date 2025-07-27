@@ -28,7 +28,7 @@ def install_package_from_metadata(package_dir, metadata):
         executable_path = metadata["installExecutablePath"]
         # Create executable script or symlink if needed
         description = f"Setting up executable at {executable_path}"
-        if not run_silent_command(f"chmod +x {executable_path}", description):
+        if not run_silent_command(f"sudo chmod +x {executable_path}", description):
             return False
 
     return True
