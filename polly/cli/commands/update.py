@@ -7,7 +7,7 @@ init(autoreset=True)
 
 
 def run_command(command, description):
-    cwd = os.getcwd()
+    cwd = os.path.expanduser("~")
     print(f"{Fore.CYAN}➤ {description}...", flush=True)
     try:
         # Run command and show output live
