@@ -2,24 +2,24 @@
 
 # --- By file changes ---
 cli:
-  - 'polly/cli/**'
+  - 'polly/cli/**/*'
   - '**/cli.py'
   - '**/main.py'
   - '**/command*'
-  - '**/commands/**'
+  - '**/commands/**/*'
 
 core:
-  - 'polly/core/**'
+  - 'polly/core/**/*'
   - '**/core.py'
   - 'polly/main.py'
 
 api:
-  - 'polly/api/**'
+  - 'polly/api/**/*'
   - '**/api.py'
 
 config:
   - '**/config.py'
-  - 'polly/config/**'
+  - 'polly/config/**/*'
   - '**/settings.py'
   - '**/.env*'
 
@@ -28,12 +28,12 @@ parser:
   - '**/parse*.py'
 
 utils:
-  - 'polly/utils/**'
+  - 'polly/utils/**/*'
   - '**/utils.py'
   - '**/helpers.py'
 
 tests:
-  - 'tests/**'
+  - 'tests/**/*'
   - '**/test_*.py'
   - '**/tests.py'
 
@@ -49,8 +49,8 @@ dependencies:
   - 'Pipfile.lock'
 
 ci:
-  - '.github/workflows/**'
-  - '.github/actions/**'
+  - '.github/workflows/**/*'
+  - '.github/actions/**/*'
 
 scripts:
   - 'build.sh'
