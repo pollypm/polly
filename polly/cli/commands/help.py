@@ -13,8 +13,7 @@ try:
     from polly.core import (
         update_required,
         latest_version,
-        get_current_version,
-        get_recent_commit_messages,
+        get_current_version
     )
 except ImportError:
     # Fallback functions if core module is not available
@@ -26,9 +25,6 @@ except ImportError:
 
     def get_current_version():
         return "Unknown"
-
-    def get_recent_commit_messages():
-        return []
 
 
 # Import simple mode utilities
@@ -108,25 +104,10 @@ def help_main():
 
     # Check for updates and get commit messages
     has_updates = update_required()
-    recent_commits = get_recent_commit_messages() if has_updates else []
-
-    # Build commit messages section
-    commit_section = ""
-    if has_updates and recent_commits:
-        commit_section = "\n\n  {s}Recent Changes:"
-        # Show max 5 commits
-        display_commits = recent_commits[:5]
-        for commit in display_commits:
-            commit_section += "\n    {g}• " + commit
-
-        # Show "X more" if there are additional commits
-        if len(recent_commits) > 5:
-            remaining = len(recent_commits) - 5
-            commit_section += "\n    {g}• + " + str(remaining) + " more"
 
     help_text = """{p}Polly {g}- {s}Help
 {g}Version {version} (Latest: {p}{latest_version}{g})
-{g}Updates Available: {p}{update_required}{g}{commit_messages}
+{g}Updates Available: {p}{update_required}
 
 {s}Usage:
   {p}polly {g}<command> [options]
@@ -176,8 +157,7 @@ def help_main():
         help_lines = help_text.splitlines()
         for help_line in help_lines:
             formatted_help = (
-                help_line.replace("{commit_messages}", commit_section)
-                .replace("{p}", primary_color)
+                help_line.replace("{p}", primary_color)
                 .replace("{s}", secondary_color)
                 .replace("{g}", grey_color)
                 .replace("{latest_version}", latest_version()[:7])
@@ -207,7 +187,6 @@ def help_main():
                 .replace("{latest_version}", latest_version()[:7])
                 .replace("{version}", get_current_version()[:7])
                 .replace("{update_required}", update_status)
-                .replace("{commit_messages}", commit_section)
             )
 
             print(f"  {art:<40}{RESET}{spacing}{formatted_help}{RESET}")
