@@ -93,29 +93,14 @@ def validate_metadata_file(metadata_file):
             metadata = json.load(f)
 
         # Required fields
-        required_fields = ["installType", "entryPoint"]
+        required_fields = ["install"]
         for field in required_fields:
             if field not in metadata:
                 return False, f"Missing required field: {field}"
 
-        # Validate installType
-        valid_install_types = ["executable", "library", "script"]
-        if metadata["installType"] not in valid_install_types:
-            return (
-                False,
-                f"Invalid installType. Must be one of: {', '.join(valid_install_types)}",
-            )
-
-        # Validate entryPoint is a list
-        if not isinstance(metadata["entryPoint"], list):
-            return False, "entryPoint must be a list of commands"
-
-        # If installType is executable, check for installExecutablePath
-        if (
-            metadata["installType"] == "executable"
-            and "installExecutablePath" not in metadata
-        ):
-            return False, "installExecutablePath is required for executable packages"
+        # Validate install is a list
+        if not isinstance(metadata["install"], list):
+            return False, "install must be a list of commands"
 
         return True, "Valid metadata"
 
