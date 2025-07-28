@@ -1,8 +1,7 @@
 from polly.core.requires_update import (
     update_required,
     latest_version,
-    get_current_version,
-    get_recent_commit_messages,
+    get_current_version
 )
 from .install_package import install_package_from_git
 from .uninstall_package import uninstall_package
