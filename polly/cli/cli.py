@@ -6,6 +6,7 @@ from polly.cli.commands.inspect import inspect_main
 from polly.cli.commands.upgrade import upgrade_main
 from polly.cli.commands.list import list_main
 from polly.utils.simple import set_simple_mode
+from polly.utils.debug import set_debug_mode
 
 
 def dispatch_command(args):
@@ -17,18 +18,28 @@ def dispatch_command(args):
         help_main()
         return
 
-    # Check for --simple flag at the start
+    # Check for global flags at the start
     simple_mode = False
-    if args[0] == "--simple":
-        simple_mode = True
-        args = args[1:]  # Remove --simple from args
+    debug_mode = False
 
-        if not args:  # If only --simple was provided
-            help_main()
-            return
+    # Process flags
+    while args and args[0].startswith("--"):
+        if args[0] == "--simple":
+            simple_mode = True
+            args = args[1:]
+        elif args[0] == "--debug":
+            debug_mode = True
+            args = args[1:]
+        else:
+            break
 
-    # Set simple mode globally
+    if not args:  # If only flags were provided
+        help_main()
+        return
+
+    # Set global modes
     set_simple_mode(simple_mode)
+    set_debug_mode(debug_mode)
 
     command = args[0]
     command_args = args[1:]

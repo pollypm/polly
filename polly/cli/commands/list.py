@@ -1,13 +1,14 @@
 import sys
 import argparse
 from polly.core import list_packages
-from polly.utils import print_header, format_message, get_colors
-
-
-import sys
-import argparse
-from polly.core import list_packages
-from polly.utils import print_header, format_message, get_colors, is_simple_mode
+from polly.utils import (
+    print_header,
+    format_message,
+    get_colors,
+    is_simple_mode,
+    is_debug_mode,
+    handle_exception_with_debug,
+)
 
 
 def display_packages_simple_mode(packages_data):
@@ -21,9 +22,7 @@ def display_packages_simple_mode(packages_data):
     # Simple format: name,type,size,installed_date
     for package in packages:
         install_date = package["install_date"].split(" ")[0]  # Just the date part
-        print(
-            f"{package['name']},{package['size_formatted']},{install_date}"
-        )
+        print(f"{package['name']},{package['size_formatted']},{install_date}")
 
 
 def display_packages_detailed_simple_mode(packages_data):
@@ -194,7 +193,10 @@ def list_main(args=None):
         print(format_message("error", "Listing cancelled by user"))
         sys.exit(1)
     except Exception as e:
-        print(format_message("error", f"Unexpected error during listing: {e}"))
+        error_message = handle_exception_with_debug(
+            f"Unexpected error during listing: {e}", e
+        )
+        print(format_message("error", error_message))
         sys.exit(1)
 
 

@@ -8,6 +8,8 @@ from polly.utils import (
     get_colors,
     format_size,
     is_simple_mode,
+    is_debug_mode,
+    handle_exception_with_debug,
 )
 
 
@@ -25,7 +27,7 @@ def display_inspection_data_simple(data):
         install_commands = metadata["install_commands"]
         if install_commands:
             print(f"install_commands:{','.join(install_commands)}")
-            
+
     # Uninstall commands
     if "uninstall_commands" in metadata:
         uninstall_commands = metadata["uninstall_commands"]
@@ -173,10 +175,13 @@ def inspect_main(args=None):
             print(format_message("error", "Inspection cancelled by user"))
         sys.exit(1)
     except Exception as e:
+        error_message = handle_exception_with_debug(
+            f"Unexpected error during inspection: {e}", e
+        )
         if is_simple_mode():
-            print(f"error:Unexpected error during inspection: {e}")
+            print(f"error:{error_message}")
         else:
-            print(format_message("error", f"Unexpected error during inspection: {e}"))
+            print(format_message("error", error_message))
         sys.exit(1)
 
 

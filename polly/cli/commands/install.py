@@ -7,6 +7,8 @@ from polly.utils import (
     get_colors,
     extract_package_id_from_url,
     is_simple_mode,
+    is_debug_mode,
+    handle_exception_with_debug,
 )
 
 
@@ -90,10 +92,13 @@ def install_main(args=None):
             print(format_message("error", "Installation cancelled by user"))
         sys.exit(1)
     except Exception as e:
+        error_message = handle_exception_with_debug(
+            f"Unexpected error during installation: {e}", e
+        )
         if is_simple_mode():
-            print(f"error:Unexpected error during installation: {e}")
+            print(f"error:{error_message}")
         else:
-            print(format_message("error", f"Unexpected error during installation: {e}"))
+            print(format_message("error", error_message))
         sys.exit(1)
 
 

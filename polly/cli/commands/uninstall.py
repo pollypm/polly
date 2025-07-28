@@ -7,6 +7,8 @@ from polly.utils import (
     get_colors,
     get_package_names,
     is_simple_mode,
+    is_debug_mode,
+    handle_exception_with_debug,
 )
 
 
@@ -89,12 +91,13 @@ def uninstall_main(args=None):
             print(format_message("error", "Uninstallation cancelled by user"))
         sys.exit(1)
     except Exception as e:
+        error_message = handle_exception_with_debug(
+            f"Unexpected error during uninstallation: {e}", e
+        )
         if is_simple_mode():
-            print(f"error:Unexpected error during uninstallation: {e}")
+            print(f"error:{error_message}")
         else:
-            print(
-                format_message("error", f"Unexpected error during uninstallation: {e}")
-            )
+            print(format_message("error", error_message))
         sys.exit(1)
 
 

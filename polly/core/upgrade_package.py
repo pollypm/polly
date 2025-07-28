@@ -8,6 +8,11 @@ from ..utils import (
     get_available_space,
     PACKAGES_DIR,
 )
+from ..utils.debug import (
+    format_error_with_debug,
+    handle_exception_with_debug,
+    debug_print,
+)
 
 
 def check_package_updates():
@@ -20,16 +25,30 @@ def check_package_updates():
     upgradeable_packages = []
     error_packages = []
 
+    debug_print(f"Checking updates for {len(packages)} packages")
+
     for package in packages:
         package_name = package["name"]
         package_path = package["path"]
 
-        update_info = check_for_updates(package_path)
-        if update_info is None:
+        debug_print(f"Checking updates for package: {package_name} at {package_path}")
+
+        try:
+            update_info = check_for_updates(package_path)
+            if update_info is None:
+                debug_print(
+                    f"Failed to check updates for {package_name} - check_for_updates returned None"
+                )
+                error_packages.append(package_name)
+            elif update_info is not False:  # Has updates
+                debug_print(f"Updates available for {package_name}: {update_info}")
+                package["update_info"] = update_info
+                upgradeable_packages.append(package)
+            else:
+                debug_print(f"No updates available for {package_name}")
+        except Exception as e:
+            debug_print(f"Exception while checking updates for {package_name}: {e}")
             error_packages.append(package_name)
-        elif update_info is not False:  # Has updates
-            package["update_info"] = update_info
-            upgradeable_packages.append(package)
 
     return upgradeable_packages, error_packages
 
@@ -66,20 +85,53 @@ def upgrade_single_package(package, update_info):
     package_path = package["path"]
     metadata = package["metadata"]
 
-    # Pull latest changes
-    if not upgrade_git_package(package_path):
-        return False
+    debug_print(f"Starting upgrade for package: {package_name}")
+    debug_print(f"Package path: {package_path}")
+    debug_print(f"Update info: {update_info}")
 
-    # Run any update commands if specified in metadata
-    if metadata and "updateCommands" in metadata:
-        update_commands = metadata["updateCommands"]
-        if isinstance(update_commands, list):
-            for i, command in enumerate(update_commands):
-                description = f"Running update command {i+1}/{len(update_commands)} for {package_name}"
-                if not run_silent_command(command, description, cwd=package_path):
+    try:
+        # Pull latest changes
+        debug_print(f"Pulling latest changes for {package_name}")
+        if not upgrade_git_package(package_path):
+            debug_print(f"Git upgrade failed for {package_name}")
+            return False
+
+        # Run uninstall commands if specified
+        if "uninstall" in metadata:
+            debug_print(
+                f"Running uninstall commands for {package_name}: {metadata['uninstall']}"
+            )
+            for command in metadata["uninstall"]:
+                if not run_silent_command(
+                    command,
+                    f"Running uninstall command for {package_name}",
+                    cwd=package_path,
+                ):
+                    debug_print(
+                        f"Uninstall command failed for {package_name}: {command}"
+                    )
                     return False
 
-    return True
+        # Run install commands
+        if "install" in metadata:
+            debug_print(
+                f"Running install commands for {package_name}: {metadata['install']}"
+            )
+            for command in metadata["install"]:
+                if not run_silent_command(
+                    command,
+                    f"Running install command for {package_name}",
+                    cwd=package_path,
+                ):
+                    debug_print(f"Install command failed for {package_name}: {command}")
+                    return False
+
+        debug_print(f"Successfully upgraded {package_name}")
+        return True
+
+    except Exception as e:
+        debug_print(f"Exception during upgrade of {package_name}: {e}")
+        return False
 
 
 def upgrade_packages(package_names=None):
@@ -90,8 +142,14 @@ def upgrade_packages(package_names=None):
     :return: Tuple of (success: bool, message: str, results: dict)
     """
     try:
+        debug_print(f"Starting package upgrade process. Package names: {package_names}")
+
         # Get packages that need upgrading
         upgradeable_packages, error_packages = check_package_updates()
+
+        debug_print(
+            f"Found {len(upgradeable_packages)} upgradeable packages, {len(error_packages)} errors"
+        )
 
         if not upgradeable_packages:
             return (
@@ -107,19 +165,35 @@ def upgrade_packages(package_names=None):
 
         # Filter by specific package names if provided
         if package_names:
+            debug_print(f"Filtering packages by names: {package_names}")
+            original_count = len(upgradeable_packages)
             upgradeable_packages = [
                 pkg for pkg in upgradeable_packages if pkg["name"] in package_names
             ]
+            debug_print(
+                f"Filtered from {original_count} to {len(upgradeable_packages)} packages"
+            )
 
         # Perform upgrades
         successful_upgrades = []
         failed_upgrades = []
 
+        debug_print(f"Starting upgrade of {len(upgradeable_packages)} packages")
+
         for package in upgradeable_packages:
-            if upgrade_single_package(package, package["update_info"]):
-                successful_upgrades.append(package["name"])
-            else:
-                failed_upgrades.append(package["name"])
+            package_name = package["name"]
+            debug_print(f"Upgrading package: {package_name}")
+
+            try:
+                if upgrade_single_package(package, package["update_info"]):
+                    successful_upgrades.append(package_name)
+                    debug_print(f"Successfully upgraded: {package_name}")
+                else:
+                    failed_upgrades.append(package_name)
+                    debug_print(f"Failed to upgrade: {package_name}")
+            except Exception as e:
+                failed_upgrades.append(package_name)
+                debug_print(f"Exception while upgrading {package_name}: {e}")
 
         # Determine overall success
         success = len(failed_upgrades) == 0
@@ -127,9 +201,16 @@ def upgrade_packages(package_names=None):
         if success and successful_upgrades:
             message = f"Successfully upgraded {len(successful_upgrades)} package(s)"
         elif failed_upgrades:
-            message = f"Failed to upgrade {len(failed_upgrades)} package(s)"
+            message = format_error_with_debug(
+                f"Failed to upgrade {len(failed_upgrades)} package(s)",
+                f"Failed packages: {', '.join(failed_upgrades)}",
+            )
         else:
             message = "No packages were upgraded"
+
+        debug_print(
+            f"Upgrade process completed. Success: {success}, Message: {message}"
+        )
 
         return (
             success,
@@ -143,8 +224,12 @@ def upgrade_packages(package_names=None):
         )
 
     except Exception as e:
+        error_message = handle_exception_with_debug(
+            f"Unexpected error during upgrade: {e}", e
+        )
+        debug_print(f"Exception in upgrade_packages: {e}")
         return (
             False,
-            f"Unexpected error during upgrade: {e}",
+            error_message,
             {"upgradeable": [], "errors": [], "successful": [], "failed": []},
         )

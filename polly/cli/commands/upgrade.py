@@ -8,6 +8,7 @@ from polly.utils import (
     format_size,
     is_simple_mode,
 )
+from polly.utils.debug import is_debug_mode, handle_exception_with_debug
 
 
 def display_upgrade_summary_simple(upgradeable_packages, error_packages):
@@ -114,6 +115,11 @@ def upgrade_main(args=None):
         action="store_true",
         help="Only check for updates, don't upgrade",
     )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug mode for detailed error messages",
+    )
 
     try:
         parsed_args = parser.parse_args(args)
@@ -122,6 +128,13 @@ def upgrade_main(args=None):
 
     skip_confirmation = parsed_args.yes
     check_only = parsed_args.check_only
+
+    # Enable debug mode if requested via command line argument
+    # (This is in addition to the global --debug flag)
+    if hasattr(parsed_args, "debug") and parsed_args.debug:
+        from polly.utils.debug import set_debug_mode
+
+        set_debug_mode(True)
 
     # Print header only in normal mode
     if not is_simple_mode():
@@ -226,10 +239,13 @@ def upgrade_main(args=None):
             print(format_message("error", "Upgrade cancelled by user"))
         sys.exit(1)
     except Exception as e:
+        error_message = handle_exception_with_debug(
+            f"Unexpected error during upgrade: {e}", e
+        )
         if is_simple_mode():
-            print(f"error:Unexpected error during upgrade: {e}")
+            print(f"error:{error_message}")
         else:
-            print(format_message("error", f"Unexpected error during upgrade: {e}"))
+            print(format_message("error", error_message))
         sys.exit(1)
 
 
