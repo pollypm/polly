@@ -10,7 +10,12 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 try:
-    from polly.core import update_required, latest_version, get_current_version
+    from polly.core import (
+        update_required,
+        latest_version,
+        get_current_version,
+        get_recent_commit_messages,
+    )
 except ImportError:
     # Fallback functions if core module is not available
     def update_required():
@@ -21,6 +26,9 @@ except ImportError:
 
     def get_current_version():
         return "Unknown"
+
+    def get_recent_commit_messages():
+        return []
 
 
 # ANSI color constants
@@ -81,9 +89,27 @@ def help_main():
         ascii_art_path = os.path.join(os.path.dirname(__file__), "../polly.txt")
         ascii_art = read_ascii_art(ascii_art_path)
 
+    # Check for updates and get commit messages
+    has_updates = update_required()
+    recent_commits = get_recent_commit_messages() if has_updates else []
+
+    # Build commit messages section
+    commit_section = ""
+    if has_updates and recent_commits:
+        commit_section = "\n\n{s}Recent Changes:"
+        # Show max 5 commits
+        display_commits = recent_commits[:5]
+        for commit in display_commits:
+            commit_section += f"\n  {{g}}• {commit}"
+
+        # Show "X more" if there are additional commits
+        if len(recent_commits) > 5:
+            remaining = len(recent_commits) - 5
+            commit_section += f"\n  {{g}}• + {remaining} more"
+
     help_text = """{p}Polly {g}- {s}Help
 {g}Version {version} (Latest: {p}{latest_version}{g})
-{g}Updates Available: {p}{update_required}{g}
+{g}Updates Available: {p}{update_required}{g}{commit_messages}
 
 {s}Usage:
   {p}polly {g}<command> [options]
@@ -139,6 +165,7 @@ def help_main():
                 .replace("{latest_version}", latest_version()[:7])
                 .replace("{version}", get_current_version()[:7])
                 .replace("{update_required}", update_status)
+                .replace("{commit_messages}", commit_section)
             )
             print(f"  {formatted_help}{RESET}")
     else:
@@ -163,6 +190,7 @@ def help_main():
                 .replace("{latest_version}", latest_version()[:7])
                 .replace("{version}", get_current_version()[:7])
                 .replace("{update_required}", update_status)
+                .replace("{commit_messages}", commit_section)
             )
 
             print(f"  {art:<40}{RESET}{spacing}{formatted_help}{RESET}")

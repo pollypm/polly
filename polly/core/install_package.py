@@ -14,21 +14,12 @@ from ..utils import (
 
 def install_package_from_metadata(package_dir, metadata):
     """Install package based on metadata configuration."""
-    install_type = metadata["installType"]
-    entry_points = metadata["entryPoint"]
+    install_commands = metadata["install"]
 
-    # Execute entry point commands
-    for i, command in enumerate(entry_points):
-        description = f"Running install command {i + 1}/{len(entry_points)}"
+    # Execute install commands
+    for i, command in enumerate(install_commands):
+        description = f"Running install command {i + 1}/{len(install_commands)}"
         if not run_silent_command(command, description, cwd=package_dir):
-            return False
-
-    # Handle executable installation
-    if install_type == "executable" and "installExecutablePath" in metadata:
-        executable_path = metadata["installExecutablePath"]
-        # Create executable script or symlink if needed
-        description = f"Setting up executable at {executable_path}"
-        if not run_silent_command(f"chmod +x {executable_path}", description):
             return False
 
     return True

@@ -1,4 +1,9 @@
-from polly.core.requires_update import *
+from polly.core.requires_update import (
+    update_required,
+    latest_version,
+    get_current_version,
+    get_recent_commit_messages,
+)
 from .install_package import install_package_from_git
 from .uninstall_package import uninstall_package
 from .inspect_package import inspect_package

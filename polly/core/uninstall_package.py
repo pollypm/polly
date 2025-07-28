@@ -8,28 +8,12 @@ from ..utils import (
 )
 
 
-def remove_executable(metadata):
-    """Remove executable if it was installed."""
-    if (
-        metadata.get("installType") == "executable"
-        and "installExecutablePath" in metadata
-    ):
-        executable_path = metadata["installExecutablePath"]
-        if os.path.exists(executable_path):
-            try:
-                os.remove(executable_path)
-                return True
-            except Exception:
-                return False
-    return True
-
-
 def run_uninstall_commands(package_dir, metadata):
     """Run any uninstall commands specified in the metadata."""
-    if "uninstallCommands" not in metadata:
+    if "uninstall" not in metadata:
         return True
 
-    commands = metadata["uninstallCommands"]
+    commands = metadata["uninstall"]
     if not isinstance(commands, list):
         return True
 
@@ -63,11 +47,6 @@ def uninstall_package(package_name):
         # Run uninstall commands if specified
         if not run_uninstall_commands(package_path, metadata):
             # Continue with removal anyway, but note the failure
-            pass
-
-        # Remove executable if applicable
-        if not remove_executable(metadata):
-            # Continue with removal anyway, but note the warning
             pass
 
         # Remove package directory
