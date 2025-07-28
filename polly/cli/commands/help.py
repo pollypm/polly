@@ -113,16 +113,16 @@ def help_main():
     # Build commit messages section
     commit_section = ""
     if has_updates and recent_commits:
-        commit_section = "\n\n{s}Recent Changes:"
+        commit_section = "\n\n  {s}Recent Changes:"
         # Show max 5 commits
         display_commits = recent_commits[:5]
         for commit in display_commits:
-            commit_section += f"\n  {{g}}• {commit}"
+            commit_section += "\n    {g}• " + commit
 
         # Show "X more" if there are additional commits
         if len(recent_commits) > 5:
             remaining = len(recent_commits) - 5
-            commit_section += f"\n  {{g}}• + {remaining} more"
+            commit_section += "\n    {g}• + " + str(remaining) + " more"
 
     help_text = """{p}Polly {g}- {s}Help
 {g}Version {version} (Latest: {p}{latest_version}{g})
@@ -176,13 +176,13 @@ def help_main():
         help_lines = help_text.splitlines()
         for help_line in help_lines:
             formatted_help = (
-                help_line.replace("{p}", primary_color)
+                help_line.replace("{commit_messages}", commit_section)
+                .replace("{p}", primary_color)
                 .replace("{s}", secondary_color)
                 .replace("{g}", grey_color)
                 .replace("{latest_version}", latest_version()[:7])
                 .replace("{version}", get_current_version()[:7])
                 .replace("{update_required}", update_status)
-                .replace("{commit_messages}", commit_section)
             )
             print(f"  {formatted_help}{RESET}")
     else:
