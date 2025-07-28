@@ -1,7 +1,13 @@
 import sys
 import argparse
 from polly.core import uninstall_package
-from polly.utils import print_header, format_message, get_colors, get_package_names
+from polly.utils import (
+    print_header,
+    format_message,
+    get_colors,
+    get_package_names,
+    is_simple_mode,
+)
 
 
 def uninstall_main(args=None):
@@ -30,20 +36,26 @@ def uninstall_main(args=None):
     # Check if package is installed
     installed_packages = get_package_names()
     if package_name not in installed_packages:
-        print(format_message("error", f"Package '{package_name}' is not installed"))
-        print(
-            f"  {colors['grey']}Use 'polly list' to see installed packages{colors['reset']}"
-        )
+        if is_simple_mode():
+            print(f"error:Package '{package_name}' is not installed")
+        else:
+            print(format_message("error", f"Package '{package_name}' is not installed"))
+            print(
+                f"  {colors['grey']}Use 'polly list' to see installed packages{colors['reset']}"
+            )
         sys.exit(1)
 
-    # Print header
-    print_header("Polly", "Package Uninstallation")
-    print(
-        f"  {colors['info']}Package:{colors['reset']} {colors['grey']}{package_name}{colors['reset']}\n"
-    )
+    # Print header and package info
+    if is_simple_mode():
+        print(f"uninstalling:{package_name}")
+    else:
+        print_header("Polly", "Package Uninstallation")
+        print(
+            f"  {colors['info']}Package:{colors['reset']} {colors['grey']}{package_name}{colors['reset']}\n"
+        )
 
-    # Confirmation prompt
-    if not skip_confirmation:
+    # Confirmation prompt (skip in simple mode)
+    if not skip_confirmation and not is_simple_mode():
         print(
             f"  {colors['warning']}?{colors['reset']} {colors['grey']}Are you sure you want to uninstall '{package_name}'? (y/N):{colors['reset']} ",
             end="",
@@ -59,16 +71,30 @@ def uninstall_main(args=None):
         success, message = uninstall_package(package_name)
 
         if success:
-            print(format_message("success", message))
+            if is_simple_mode():
+                print(f"success:{message}")
+            else:
+                print(format_message("success", message))
         else:
-            print(format_message("error", message))
+            if is_simple_mode():
+                print(f"error:{message}")
+            else:
+                print(format_message("error", message))
             sys.exit(1)
 
     except KeyboardInterrupt:
-        print(format_message("error", "Uninstallation cancelled by user"))
+        if is_simple_mode():
+            print("error:Uninstallation cancelled by user")
+        else:
+            print(format_message("error", "Uninstallation cancelled by user"))
         sys.exit(1)
     except Exception as e:
-        print(format_message("error", f"Unexpected error during uninstallation: {e}"))
+        if is_simple_mode():
+            print(f"error:Unexpected error during uninstallation: {e}")
+        else:
+            print(
+                format_message("error", f"Unexpected error during uninstallation: {e}")
+            )
         sys.exit(1)
 
 

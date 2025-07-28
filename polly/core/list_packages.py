@@ -31,7 +31,6 @@ def list_packages(detailed=False):
         for package in packages:
             formatted_package = {
                 "name": package["name"],
-                "install_type": package["install_type"],
                 "size": package["size"],
                 "size_formatted": format_size(package["size"]),
                 "install_date": package["install_date"],
@@ -44,24 +43,10 @@ def list_packages(detailed=False):
                 if package["metadata"]:
                     metadata = package["metadata"]
 
-                    # Check executable status
-                    executable_info = None
-                    if (
-                        metadata.get("installType") == "executable"
-                        and "installExecutablePath" in metadata
-                    ):
-                        import os
-
-                        executable_path = metadata["installExecutablePath"]
-                        executable_info = {
-                            "path": executable_path,
-                            "exists": os.path.exists(executable_path),
-                        }
-
                     formatted_package.update(
                         {
-                            "executable_info": executable_info,
-                            "entry_points": metadata.get("entryPoint", []),
+                            "install_commands": metadata.get("install", []),
+                            "uninstall_commands": metadata.get("uninstall", []),
                             "version": metadata.get("version"),
                             "description": metadata.get("description"),
                             "author": metadata.get("author"),

@@ -73,40 +73,18 @@ def inspect_package(package_name):
         # Get package contents
         contents = get_package_contents(package_path)
 
-        # Check executable status
-        executable_status = None
-        if (
-            metadata.get("installType") == "executable"
-            and "installExecutablePath" in metadata
-        ):
-            executable_path = metadata["installExecutablePath"]
-            executable_status = {
-                "path": executable_path,
-                "exists": os.path.exists(executable_path),
-            }
-
-        # Prepare additional metadata (excluding standard fields)
-        standard_fields = {
-            "installType",
-            "entryPoint",
-            "installExecutablePath",
-            "uninstallCommands",
-        }
-        additional_metadata = {
-            k: v for k, v in metadata.items() if k not in standard_fields
-        }
-
         # Compile all information
         inspection_data = {
             "name": package_name,
             "path": package_path,
-            "install_type": metadata.get("installType", "Unknown"),
             "stats": stats,
             "metadata": metadata,
             "git_info": git_info,
             "contents": contents,
-            "executable_status": executable_status,
-            "additional_metadata": additional_metadata,
+            "additional_metadata": {
+                "install": metadata.get("install", []),
+                "uninstall": metadata.get("uninstall", []),
+            },
         }
 
         return True, "Package inspection completed", inspection_data

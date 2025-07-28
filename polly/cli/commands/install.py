@@ -6,6 +6,7 @@ from polly.utils import (
     format_message,
     get_colors,
     extract_package_id_from_url,
+    is_simple_mode,
 )
 
 
@@ -34,43 +35,65 @@ def install_main(args=None):
         or repo_url.endswith(".git")
         or "/" in repo_url
     ):
-        print(format_message("error", f"Invalid repository URL: {repo_url}"))
-        print(
-            f"  {colors['grey']}Please provide a valid git repository URL{colors['reset']}"
-        )
+        if is_simple_mode():
+            print(f"error:Invalid repository URL: {repo_url}")
+        else:
+            print(format_message("error", f"Invalid repository URL: {repo_url}"))
+            print(
+                f"  {colors['grey']}Please provide a valid git repository URL{colors['reset']}"
+            )
         sys.exit(1)
 
-    # Print header
-    print_header("Polly", "Package Installation")
+    # Print header and package info
+    if is_simple_mode():
+        package_id = extract_package_id_from_url(repo_url)
+        print(f"installing:{package_id}")
+        print(f"repository:{repo_url}")
+    else:
+        print_header("Polly", "Package Installation")
 
-    # Show package information
-    package_id = extract_package_id_from_url(repo_url)
-    print(
-        f"  {colors['info']}Package ID:{colors['reset']} {colors['grey']}{package_id}{colors['reset']}"
-    )
-    print(
-        f"  {colors['info']}Repository:{colors['reset']} {colors['grey']}{repo_url}{colors['reset']}\n"
-    )
+        # Show package information
+        package_id = extract_package_id_from_url(repo_url)
+        print(
+            f"  {colors['info']}Package ID:{colors['reset']} {colors['grey']}{package_id}{colors['reset']}"
+        )
+        print(
+            f"  {colors['info']}Repository:{colors['reset']} {colors['grey']}{repo_url}{colors['reset']}\n"
+        )
 
     # Install the package
     try:
         success, message, package_name = install_package_from_git(repo_url)
 
         if success:
-            print(format_message("success", message))
-            if package_name:
-                print(
-                    f"  {colors['grey']}Location: /opt/pollypackages/{package_name}{colors['reset']}\n"
-                )
+            if is_simple_mode():
+                print(f"success:{message}")
+                if package_name:
+                    print(f"location:/opt/pollypackages/{package_name}")
+            else:
+                print(format_message("success", message))
+                if package_name:
+                    print(
+                        f"  {colors['grey']}Location: /opt/pollypackages/{package_name}{colors['reset']}\n"
+                    )
         else:
-            print(format_message("error", message))
+            if is_simple_mode():
+                print(f"error:{message}")
+            else:
+                print(format_message("error", message))
             sys.exit(1)
 
     except KeyboardInterrupt:
-        print(format_message("error", "Installation cancelled by user"))
+        if is_simple_mode():
+            print("error:Installation cancelled by user")
+        else:
+            print(format_message("error", "Installation cancelled by user"))
         sys.exit(1)
     except Exception as e:
-        print(format_message("error", f"Unexpected error during installation: {e}"))
+        if is_simple_mode():
+            print(f"error:Unexpected error during installation: {e}")
+        else:
+            print(format_message("error", f"Unexpected error during installation: {e}"))
         sys.exit(1)
 
 

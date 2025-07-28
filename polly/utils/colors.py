@@ -8,6 +8,14 @@ GREY_COLOR = "#808080"  # Grey
 INFO_COLOR = "#06B6D4"  # Cyan
 WARNING_COLOR = "#F59E0B"  # Yellow
 
+# Import simple mode utilities
+from polly.utils.simple import (
+    is_simple_mode,
+    get_simple_colors,
+    simple_format_message,
+    simple_print_header,
+)
+
 
 def hex_to_ansi(hex_color):
     """Convert hex color to ANSI escape sequence."""
@@ -18,6 +26,9 @@ def hex_to_ansi(hex_color):
 
 def get_colors():
     """Get color codes for consistent styling."""
+    if is_simple_mode():
+        return get_simple_colors()
+
     return {
         "primary": hex_to_ansi(PRIMARY_COLOR),
         "secondary": hex_to_ansi(SECONDARY_COLOR),
@@ -32,6 +43,9 @@ def get_colors():
 
 def format_message(message_type, message):
     """Format a message with appropriate color and symbol."""
+    if is_simple_mode():
+        return simple_format_message(message_type, message)
+
     colors = get_colors()
 
     symbols = {
@@ -49,6 +63,10 @@ def format_message(message_type, message):
 
 def print_header(title, subtitle=None):
     """Print a formatted header."""
+    if is_simple_mode():
+        simple_print_header(title, subtitle)
+        return
+
     colors = get_colors()
 
     if subtitle:

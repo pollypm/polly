@@ -31,6 +31,10 @@ except ImportError:
         return []
 
 
+# Import simple mode utilities
+from polly.utils import is_simple_mode
+
+
 # ANSI color constants
 RESET = "\033[0m"
 PRIMARY_COLOR = "#4F8EF7"  # Blue
@@ -76,8 +80,21 @@ def create_simple_header():
 └─────────────────────────┘"""
 
 
+def help_simple():
+    """Display help in simple mode for external applications."""
+    print("commands:help,update,install,uninstall,list,inspect,upgrade")
+    print(f"version:{get_current_version()[:7]}")
+    print(f"latest_version:{latest_version()[:7]}")
+    print(f"update_available:{update_required()}")
+
+
 def help_main():
     """Display the help message with ASCII art."""
+    # Check if in simple mode
+    if is_simple_mode():
+        help_simple()
+        return
+
     terminal_width = get_terminal_width()
     hide_ascii_art = should_hide_ascii_art(terminal_width)
 

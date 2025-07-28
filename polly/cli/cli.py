@@ -5,6 +5,7 @@ from polly.cli.commands.uninstall import uninstall_main
 from polly.cli.commands.inspect import inspect_main
 from polly.cli.commands.upgrade import upgrade_main
 from polly.cli.commands.list import list_main
+from polly.utils.simple import set_simple_mode
 
 
 def dispatch_command(args):
@@ -15,6 +16,19 @@ def dispatch_command(args):
     if not args:
         help_main()
         return
+
+    # Check for --simple flag at the start
+    simple_mode = False
+    if args[0] == "--simple":
+        simple_mode = True
+        args = args[1:]  # Remove --simple from args
+
+        if not args:  # If only --simple was provided
+            help_main()
+            return
+
+    # Set simple mode globally
+    set_simple_mode(simple_mode)
 
     command = args[0]
     command_args = args[1:]

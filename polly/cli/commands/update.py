@@ -2,6 +2,9 @@ import subprocess
 import sys
 import os
 
+# Import simple mode utilities
+from polly.utils import is_simple_mode
+
 # ANSI color constants
 RESET = "\033[0m"
 PRIMARY_COLOR = "#4F8EF7"  # Blue
@@ -20,49 +23,59 @@ def hex_to_ansi(hex_color):
 
 def run_command(command, description):
     cwd = os.path.expanduser("~")
-    primary = hex_to_ansi(PRIMARY_COLOR)
-    success = hex_to_ansi(SUCCESS_COLOR)
-    error = hex_to_ansi(ERROR_COLOR)
-    grey = hex_to_ansi(GREY_COLOR)
 
-    print(f"  {primary}➤{RESET} {grey}{description}...{RESET}")
+    if is_simple_mode():
+        print(f"running:{description}")
+    else:
+        primary = hex_to_ansi(PRIMARY_COLOR)
+        success = hex_to_ansi(SUCCESS_COLOR)
+        error = hex_to_ansi(ERROR_COLOR)
+        grey = hex_to_ansi(GREY_COLOR)
+        print(f"  {primary}➤{RESET} {grey}{description}...{RESET}")
+
     try:
         # Run command and show output live
-        process = subprocess.Popen(
+        result = subprocess.run(
             command,
             shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
             cwd=cwd,
+            capture_output=True,
+            text=True,
         )
-        while True:
-            output = process.stdout.readline()
-            if output == "" and process.poll() is not None:
-                break
-            if output:
-                # Indent command output for better visual hierarchy
-                print(f"    {grey}{output.rstrip()}{RESET}")
-        returncode = process.poll()
-        if returncode == 0:
-            print(f"  {success}✔{RESET} {grey}{description} completed.{RESET}")
+
+        if result.returncode == 0:
+            if is_simple_mode():
+                print(f"completed:{description}")
+            else:
+                print(f"  {success}✔{RESET} {grey}{description} completed.{RESET}")
+        else:
+            if is_simple_mode():
+                print(f"failed:{description}")
+                print(f"error:{result.stderr}")
+            else:
+                print(f"  {error}✖{RESET} {grey}{description} failed.{RESET}")
+                print(f"  {error}Error:{RESET} {grey}{result.stderr}{RESET}")
+            sys.exit(1)
+
+    except Exception as e:
+        if is_simple_mode():
+            print(f"failed:{description}")
+            print(f"error:{e}")
         else:
             print(f"  {error}✖{RESET} {grey}{description} failed.{RESET}")
-            sys.exit(1)
-    except Exception as e:
-        print(f"  {error}✖{RESET} {grey}{description} failed.{RESET}")
-        print(f"  {error}Exception:{RESET} {grey}{e}{RESET}")
+            print(f"  {error}Exception:{RESET} {grey}{e}{RESET}")
         sys.exit(1)
 
 
 def update_main():
-    primary = hex_to_ansi(PRIMARY_COLOR)
-    secondary = hex_to_ansi(SECONDARY_COLOR)
-    success = hex_to_ansi(SUCCESS_COLOR)
-    grey = hex_to_ansi(GREY_COLOR)
-
-    print(f"\n  {primary}Polly{RESET} {grey}- {secondary}Update{RESET}")
-    print(f"  {grey}{'─' * 20}{RESET}\n")
+    if is_simple_mode():
+        print("updating:polly")
+    else:
+        primary = hex_to_ansi(PRIMARY_COLOR)
+        secondary = hex_to_ansi(SECONDARY_COLOR)
+        grey = hex_to_ansi(GREY_COLOR)
+        print(f"\n  {primary}Polly{RESET} {grey}- {secondary}Update{RESET}")
+        print(f"  {grey}{'─' * 20}{RESET}\n")
 
     def do_update():
         run_command(
@@ -73,9 +86,15 @@ def update_main():
             "curl -fsSL https://raw.githubusercontent.com/pollypm/polly/main/install.sh | sudo bash",
             "Installing latest Polly version",
         )
-        print(
-            f"\n  {success}✔{RESET} {grey}Update complete! Polly is now up to date.{RESET}\n"
-        )
+
+        if is_simple_mode():
+            print("success:Update complete")
+        else:
+            success = hex_to_ansi(SUCCESS_COLOR)
+            grey = hex_to_ansi(GREY_COLOR)
+            print(
+                f"\n  {success}✔{RESET} {grey}Update complete! Polly is now up to date.{RESET}\n"
+            )
 
     do_update()
 
